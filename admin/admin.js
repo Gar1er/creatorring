@@ -45,7 +45,12 @@ function errorLegible(error) {
 
 // Tabulador: solo muestra una sección a la vez; no cambia permisos.
 function mostrarPestana(nombre) {
-  for (const clave of ["peleadores", "combates", "eventos"]) {
+  for (const clave of [
+    "peleadores",
+    "combates",
+    "eventos",
+    "proximosEventos",
+  ]) {
     $(`seccion${clave[0].toUpperCase()}${clave.slice(1)}`).hidden =
       clave !== nombre;
   }
@@ -431,6 +436,52 @@ function rellenarSelector(id, registros, describir, placeholder) {
   if ([...select.options].some((op) => op.value === anterior))
     select.value = anterior;
 }
+function dibujarProximosEventos() {
+  const tbody = $("listaProximosEventos");
+  tbody.replaceChildren();
+
+  // Obtenemos la fecha de hoy en formato local.
+  const hoy = new Date();
+  const fechaHoy = [
+    hoy.getFullYear(),
+    String(hoy.getMonth() + 1).padStart(2, "0"),
+    String(hoy.getDate()).padStart(2, "0"),
+  ].join("-");
+
+  // Filtramos los eventos de hoy y los futuros.
+  const proximos = estado.eventos
+    .filter(
+      (evento) =>
+        evento.fecha &&
+        /^\d{4}-\d{2}-\d{2}$/.test(evento.fecha) &&
+        evento.fecha >= fechaHoy,
+    )
+    .sort((a, b) => a.fecha.localeCompare(b.fecha));
+
+  if (proximos.length === 0) {
+    const fila = document.createElement("tr");
+    const celda = document.createElement("td");
+
+    celda.colSpan = 4;
+    celda.textContent = "No hay próximos eventos registrados.";
+
+    fila.appendChild(celda);
+    tbody.appendChild(fila);
+    return;
+  }
+
+  proximos.forEach((evento) => {
+    const fila = document.createElement("tr");
+
+    fila.appendChild(celda(evento.nombre || "Sin nombre"));
+    fila.appendChild(celda(evento.fecha));
+    fila.appendChild(celda(evento.organizador || "No registrado"));
+    fila.appendChild(celda(evento.lugar || "No registrado"));
+
+    tbody.appendChild(fila);
+  });
+}
+
 async function recargarTodo() {
   // Esperamos secuencialmente para que una tabla con fallo no oculte las otras.
   for (const tabla of ["peleadores", "eventos", "combates"]) {
@@ -465,6 +516,7 @@ async function recargarTodo() {
   dibujarPeleadores();
   dibujarEventos();
   dibujarCombates();
+  dibujarProximosEventos();
 }
 
 // La autenticación se hace ANTES de mostrar el panel y traer los datos.

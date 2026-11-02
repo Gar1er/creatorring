@@ -1,90 +1,293 @@
 <!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Panel de administración | CreatorRing</title>
-  <!-- El panel tiene CSS propio; el catálogo público no se modifica. -->
-  <link rel="stylesheet" href="admin.css" />
-</head>
-<body>
-  <header class="admin-header">
-    <div><h1>🥊 CreatorRing</h1><p>Administración de peleadores, combates y eventos</p></div>
-    <div class="header-actions"><a href="../index.html">Ver catálogo ↗</a><button id="cerrarSesion" type="button" hidden>Cerrar sesión</button></div>
-  </header>
-  <!-- No mostramos formularios hasta verificar usuario Y autorización de Supabase. -->
-  <p id="mensaje" class="status" role="status">Verificando acceso...</p>
-  <main id="panel" hidden>
-    <nav class="tabs" aria-label="Secciones de administración">
-      <button type="button" data-tab="peleadores" aria-pressed="true">🥊 Peleadores</button>
-      <button type="button" data-tab="combates" aria-pressed="false">🏆 Combates</button>
-      <button type="button" data-tab="eventos" aria-pressed="false">📅 Eventos</button>
-    </nav>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel de administración | CreatorRing</title>
+    <!-- El panel tiene CSS propio; el catálogo público no se modifica. -->
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <header class="admin-header">
+      <div>
+        <h1>🥊 CreatorRing</h1>
+        <p>Administración de peleadores, combates y eventos</p>
+      </div>
+      <div class="header-actions">
+        <a href="../index.html">Ver catálogo ↗</a
+        ><button id="cerrarSesion" type="button" hidden>Cerrar sesión</button>
+      </div>
+    </header>
+    <!-- No mostramos formularios hasta verificar usuario Y autorización de Supabase. -->
+    <p id="mensaje" class="status" role="status">Verificando acceso...</p>
+    <main id="panel" hidden>
+      <nav class="tabs" aria-label="Secciones de administración">
+        <button type="button" data-tab="peleadores" aria-pressed="true">
+          🥊 Peleadores
+        </button>
+        <button type="button" data-tab="combates" aria-pressed="false">
+          🏆 Combates
+        </button>
+        <button type="button" data-tab="eventos" aria-pressed="false">
+          📅 Eventos
+        </button>
+        <button type="button" data-tab="proximosEventos" aria-pressed="false">
+          ⏳ Próximos eventos
+        </button>
+      </nav>
 
-    <!-- TABLA peleadores: cada ficha puede crearse, modificarse o eliminarse. -->
-    <section id="seccionPeleadores" class="admin-section">
-      <h2>🥊 Peleadores</h2>
-      <p class="hint">Solo aparecen los registrados en Supabase. Los del archivo histórico se conservan por separado hasta que los importes.</p>
-      <form id="formPeleador" class="admin-form">
-        <input type="hidden" id="peleadorEditId" />
-        <label>Slug único <input id="slug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="ejemplo: ibai-llanos" /></label>
-        <label>Nombre real <input id="nombre_real" placeholder="Nombre completo" /></label>
-        <label>Alias <input id="alias" placeholder="Nombre artístico" /></label>
-        <label>País <input id="pais" placeholder="México" /></label>
-        <label>Fotografía (URL) <input id="foto" type="url" placeholder="https://..." /></label>
-        <label>Récord (victorias-derrotas-empates) <input id="record" placeholder="0-0-0" pattern="\s*\d+\s*-\s*\d+\s*-\s*\d+\s*" /></label>
-        <label>Instagram <input id="instagram" type="url" placeholder="https://instagram.com/..." /></label>
-        <label>TikTok <input id="tiktok" type="url" placeholder="https://tiktok.com/@..." /></label>
-        <label>YouTube <input id="youtube" type="url" placeholder="https://youtube.com/@..." /></label>
-        <label>X / Twitter <input id="twitter" type="url" placeholder="https://x.com/..." /></label>
-        <div class="form-actions"><button type="submit" id="guardarPeleador">💾 Guardar peleador</button><button type="button" id="cancelarPeleador" class="secondary" hidden>Cancelar edición</button></div>
-      </form>
-      <p id="mensajePeleador" class="status" role="status"></p>
-      <h3>Registrados en Supabase</h3>
-      <div class="table-scroll"><table><thead><tr><th>ID</th><th>Peleador</th><th>Slug</th><th>Récord</th><th>Acciones</th></tr></thead><tbody id="listaPeleadores"></tbody></table></div>
-    </section>
+      <!-- TABLA peleadores: cada ficha puede crearse, modificarse o eliminarse. -->
+      <section id="seccionPeleadores" class="admin-section">
+        <h2>🥊 Peleadores</h2>
+        <p class="hint">
+          Solo aparecen los registrados en Supabase. Los del archivo histórico
+          se conservan por separado hasta que los importes.
+        </p>
+        <form id="formPeleador" class="admin-form">
+          <input type="hidden" id="peleadorEditId" />
+          <label
+            >Slug único
+            <input
+              id="slug"
+              required
+              pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+              placeholder="ejemplo: ibai-llanos"
+          /></label>
+          <label
+            >Nombre real <input id="nombre_real" placeholder="Nombre completo"
+          /></label>
+          <label
+            >Alias <input id="alias" placeholder="Nombre artístico"
+          /></label>
+          <label>País <input id="pais" placeholder="México" /></label>
+          <label
+            >Fotografía (URL)
+            <input id="foto" type="url" placeholder="https://..."
+          /></label>
+          <label
+            >Récord (victorias-derrotas-empates)
+            <input
+              id="record"
+              placeholder="0-0-0"
+              pattern="\s*\d+\s*-\s*\d+\s*-\s*\d+\s*"
+          /></label>
+          <label
+            >Instagram
+            <input
+              id="instagram"
+              type="url"
+              placeholder="https://instagram.com/..."
+          /></label>
+          <label
+            >TikTok
+            <input id="tiktok" type="url" placeholder="https://tiktok.com/@..."
+          /></label>
+          <label
+            >YouTube
+            <input
+              id="youtube"
+              type="url"
+              placeholder="https://youtube.com/@..."
+          /></label>
+          <label
+            >X / Twitter
+            <input id="twitter" type="url" placeholder="https://x.com/..."
+          /></label>
+          <div class="form-actions">
+            <button type="submit" id="guardarPeleador">
+              💾 Guardar peleador</button
+            ><button
+              type="button"
+              id="cancelarPeleador"
+              class="secondary"
+              hidden
+            >
+              Cancelar edición
+            </button>
+          </div>
+        </form>
+        <p id="mensajePeleador" class="status" role="status"></p>
+        <h3>Registrados en Supabase</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Peleador</th>
+                <th>Slug</th>
+                <th>Récord</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="listaPeleadores"></tbody>
+          </table>
+        </div>
+      </section>
 
-    <!-- TABLA combates: asociado por peleador_id; evento_id puede ser NULL. -->
-    <section id="seccionCombates" class="admin-section" hidden>
-      <h2>🏆 Combates</h2>
-      <p class="hint">Guarda una pelea por cada perfil implicado si quieres mostrarla en ambos historiales. El récord del peleador se actualiza manualmente.</p>
-      <form id="formCombate" class="admin-form">
-        <input type="hidden" id="combateEditId" />
-        <label>Peleador <select id="combatePeleador" required><option value="">Selecciona un peleador</option></select></label>
-        <label>Evento <select id="combateEvento"><option value="">Sin evento asignado</option></select></label>
-        <label>Oponente <input id="combateOponente" required placeholder="Nombre del rival" /></label>
-        <label>Resultado <select id="combateResultado" required><option value="">Selecciona un resultado</option><option>Victoria</option><option>Derrota</option><option>Empate</option><option>Sin resultado</option></select></label>
-        <label>Método <input id="combateMetodo" placeholder="KO, TKO, decisión..." /></label>
-        <label>Fecha <input id="combateFecha" type="date" /></label>
-        <label>Video (URL) <input id="combateVideo" type="url" placeholder="https://..." /></label>
-        <div class="form-actions"><button type="submit" id="guardarCombate">💾 Guardar combate</button><button type="button" id="cancelarCombate" class="secondary" hidden>Cancelar edición</button></div>
-      </form>
-      <p id="mensajeCombate" class="status" role="status"></p>
-      <h3>Combates guardados</h3>
-      <div class="table-scroll"><table><thead><tr><th>ID</th><th>Peleador</th><th>Rival</th><th>Fecha</th><th>Resultado</th><th>Acciones</th></tr></thead><tbody id="listaCombates"></tbody></table></div>
-    </section>
+      <!-- TABLA combates: asociado por peleador_id; evento_id puede ser NULL. -->
+      <section id="seccionCombates" class="admin-section" hidden>
+        <h2>🏆 Combates</h2>
+        <p class="hint">
+          Guarda una pelea por cada perfil implicado si quieres mostrarla en
+          ambos historiales. El récord del peleador se actualiza manualmente.
+        </p>
+        <form id="formCombate" class="admin-form">
+          <input type="hidden" id="combateEditId" />
+          <label
+            >Peleador
+            <select id="combatePeleador" required>
+              <option value="">Selecciona un peleador</option>
+            </select></label
+          >
+          <label
+            >Evento
+            <select id="combateEvento">
+              <option value="">Sin evento asignado</option>
+            </select></label
+          >
+          <label
+            >Oponente
+            <input id="combateOponente" required placeholder="Nombre del rival"
+          /></label>
+          <label
+            >Resultado
+            <select id="combateResultado" required>
+              <option value="">Selecciona un resultado</option>
+              <option>Victoria</option>
+              <option>Derrota</option>
+              <option>Empate</option>
+              <option>Sin resultado</option>
+            </select></label
+          >
+          <label
+            >Método
+            <input id="combateMetodo" placeholder="KO, TKO, decisión..."
+          /></label>
+          <label>Fecha <input id="combateFecha" type="date" /></label>
+          <label
+            >Video (URL)
+            <input id="combateVideo" type="url" placeholder="https://..."
+          /></label>
+          <div class="form-actions">
+            <button type="submit" id="guardarCombate">💾 Guardar combate</button
+            ><button
+              type="button"
+              id="cancelarCombate"
+              class="secondary"
+              hidden
+            >
+              Cancelar edición
+            </button>
+          </div>
+        </form>
+        <p id="mensajeCombate" class="status" role="status"></p>
+        <h3>Combates guardados</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Peleador</th>
+                <th>Rival</th>
+                <th>Fecha</th>
+                <th>Resultado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="listaCombates"></tbody>
+          </table>
+        </div>
+      </section>
 
-    <!-- TABLA eventos: puede necesitar la migración SQL incluida en el ZIP. -->
-    <section id="seccionEventos" class="admin-section" hidden>
-      <h2>📅 Eventos</h2>
-      <p class="hint">Si falla el guardado por una columna inexistente, ejecuta primero el archivo <code>sql/01_eventos_campos.sql</code> en Supabase SQL Editor.</p>
-      <form id="formEvento" class="admin-form">
-        <input type="hidden" id="eventoEditId" />
-        <label>Nombre del evento <input id="eventoNombre" required placeholder="Ejemplo: La Velada del Año" /></label>
-        <label>Fecha <input id="eventoFecha" type="date" /></label>
-        <label>Organizador <input id="eventoOrganizador" placeholder="Nombre del organizador" /></label>
-        <label>Lugar <input id="eventoLugar" placeholder="Ciudad o recinto" /></label>
-        <label>Descripción <textarea id="eventoDescripcion" rows="3" placeholder="Detalles opcionales"></textarea></label>
-        <div class="form-actions"><button type="submit" id="guardarEvento">💾 Guardar evento</button><button type="button" id="cancelarEvento" class="secondary" hidden>Cancelar edición</button></div>
-      </form>
-      <p id="mensajeEvento" class="status" role="status"></p>
-      <h3>Eventos guardados</h3>
-      <div class="table-scroll"><table><thead><tr><th>ID</th><th>Evento</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="listaEventos"></tbody></table></div>
-    </section>
-  </main>
-  <!-- Primero biblioteca, luego cliente de esta web, después lógica administrativa. -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="../supabase-config.js"></script>
-  <script src="admin.js"></script>
-</body>
+      <!-- TABLA eventos: puede necesitar la migración SQL incluida en el ZIP. -->
+      <section id="seccionEventos" class="admin-section" hidden>
+        <h2>📅 Eventos</h2>
+        <p class="hint">
+          Si falla el guardado por una columna inexistente, ejecuta primero el
+          archivo <code>sql/01_eventos_campos.sql</code> en Supabase SQL Editor.
+        </p>
+        <form id="formEvento" class="admin-form">
+          <input type="hidden" id="eventoEditId" />
+          <label
+            >Nombre del evento
+            <input
+              id="eventoNombre"
+              required
+              placeholder="Ejemplo: La Velada del Año"
+          /></label>
+          <label>Fecha <input id="eventoFecha" type="date" /></label>
+          <label
+            >Organizador
+            <input id="eventoOrganizador" placeholder="Nombre del organizador"
+          /></label>
+          <label
+            >Lugar <input id="eventoLugar" placeholder="Ciudad o recinto"
+          /></label>
+          <label
+            >Descripción
+            <textarea
+              id="eventoDescripcion"
+              rows="3"
+              placeholder="Detalles opcionales"
+            ></textarea>
+          </label>
+          <div class="form-actions">
+            <button type="submit" id="guardarEvento">💾 Guardar evento</button
+            ><button type="button" id="cancelarEvento" class="secondary" hidden>
+              Cancelar edición
+            </button>
+          </div>
+        </form>
+        <p id="mensajeEvento" class="status" role="status"></p>
+        <h3>Eventos guardados</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Evento</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="listaEventos"></tbody>
+          </table>
+        </div>
+      </section>
+      <!-- PRÓXIMOS EVENTOS -->
+      <section id="seccionProximosEventos" class="admin-section" hidden>
+        <h2>⏳ Próximos eventos</h2>
+
+        <p class="hint">
+          Aquí aparecerán automáticamente los eventos futuros registrados en
+          Supabase. No es necesario registrarlos dos veces.
+        </p>
+
+        <h3>🥊 Eventos programados</h3>
+
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Evento</th>
+                <th>Fecha</th>
+                <th>Organizador</th>
+                <th>Lugar</th>
+              </tr>
+            </thead>
+
+            <tbody id="listaProximosEventos">
+              <tr>
+                <td colspan="4">Cargando próximos eventos...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <!-- Primero biblioteca, luego cliente de esta web, después lógica administrativa. -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="../supabase-config.js"></script>
+    <script src="admin.js"></script>
+  </body>
 </html>
