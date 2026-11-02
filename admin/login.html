@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Acceso administrador | CreatorRing</title><link rel="stylesheet" href="admin.css" /></head>
+<body>
+<main class="login-shell">
+<h1>🥊 CreatorRing</h1><h2>Acceso de administración</h2>
+<p class="hint">Solo el usuario autorizado en Supabase puede modificar los datos.</p>
+<form id="loginForm">
+  <label>Correo electrónico <input id="email" type="email" autocomplete="username" required /></label>
+  <label>Contraseña <input id="password" type="password" autocomplete="current-password" required /></label>
+  <button type="submit" id="iniciarSesion">Iniciar sesión</button>
+</form>
+<p id="mensaje" class="status" role="status"></p>
+<p><a href="../index.html">← Volver al catálogo</a></p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../supabase-config.js"></script>
+<script>
+  // La contraseña se entrega a Supabase Auth: no se guarda en la página.
+  const formulario = document.getElementById("loginForm");
+  const mensaje = document.getElementById("mensaje");
+  formulario.addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+    const boton = document.getElementById("iniciarSesion");
+    boton.disabled = true;
+    mensaje.textContent = "Verificando credenciales y permisos...";
+    try {
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email: document.getElementById("email").value.trim(),
+        password: document.getElementById("password").value,
+      });
+      if (error) throw error;
+      // Una sesión autenticada no necesariamente es administradora.
+      const { data: esAdmin, error: errorAdmin } = await supabaseClient.rpc("es_administrador");
+      if (errorAdmin || esAdmin !== true) {
+        await supabaseClient.auth.signOut();
+        mensaje.textContent = "Acceso denegado: la cuenta no es administradora.";
+        return;
+      }
+      window.location.replace("panel.html");
+    } catch (error) {
+      console.error("Error de inicio de sesión:", error);
+      mensaje.textContent = "No se pudo iniciar sesión. Verifica correo y contraseña.";
+    } finally {
+      boton.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,5 +1,8 @@
 // ==========================================
-// BASE DE DATOS OFICIAL DE PELEADORES
+// CATÁLOGO HISTÓRICO LOCAL: respaldo de peleadores del proyecto.
+// Este archivo NO se sincroniza automáticamente con Supabase.
+// Cuando existe el mismo slug en ambos, los datos de Supabase tienen prioridad.
+// Para nuevos registros utiliza admin/panel.html, no este archivo.
 // ==========================================
 
 const listaPeleadoresOficial = [
@@ -17,7 +20,7 @@ const listaPeleadoresOficial = [
     peleas: [
       {
         fecha: "26/07/2025",
-        evento: "La Velada del Año V",
+        evento: "La velada del Año V",
         oponente: "Roro",
         resultado: "W",
         metodo: "SD",
@@ -40,7 +43,7 @@ const listaPeleadoresOficial = [
     peleas: [
       {
         fecha: "25/06/2022",
-        evento: "La Velada del Año II",
+        evento: "La velada del Año II",
         oponente: "Paracetamor",
         resultado: "W",
         metodo: "UD",
@@ -86,7 +89,7 @@ const listaPeleadoresOficial = [
     peleas: [
       {
         fecha: "01/07/2023",
-        evento: "La Velada del Año III",
+        evento: "La velada del Año III",
         oponente: "Ampeter",
         resultado: "W",
         metodo: "SD",
@@ -109,7 +112,7 @@ const listaPeleadoresOficial = [
     peleas: [
       {
         fecha: "13/07/2024",
-        evento: "La Velada del Año IV",
+        evento: "La  velada del año IV",
         oponente: "Carrera",
         resultado: "W",
         metodo: "UD",
@@ -214,7 +217,7 @@ const listaPeleadoresOficial = [
     id: "alexismvgler",
     nombreReal: "Alexis Mugler",
     alias: "Alexis Mvgler",
-    record: "1 - 0 - 0",
+    record: "0 - 1 - 0",
     pais: "México 🇲🇽",
     foto: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png",
     redes: {
@@ -247,7 +250,7 @@ const listaPeleadoresOficial = [
     peleas: [
       {
         fecha: "13/07/2024",
-        evento: "La velada del año IV",
+        evento: "La  velada del año IV",
         oponente: "Zeling & Nissaxter",
         resultado: "W",
         metodo: "TKO",
@@ -306,7 +309,7 @@ const listaPeleadoresOficial = [
     peleas: [
       {
         fecha: "13/07/2024",
-        evento: "La Velada del Año IV",
+        evento: "La  velada del año IV",
         oponente: "Alana & Amablitz",
         resultado: "L",
         metodo: "TKO",
@@ -329,7 +332,7 @@ const listaPeleadoresOficial = [
     peleas: [
       {
         fecha: "25/07/2026",
-        evento: "La Velada del Año VI",
+        evento: "La velada del año VI",
         oponente: "Angie Velasco",
         resultado: "L",
         metodo: "UD",
@@ -352,7 +355,7 @@ const listaPeleadoresOficial = [
     peleas: [
       {
         fecha: "13/07/2024",
-        evento: "La Velada del Año IV",
+        evento: "La velada del año IV",
         oponente: "Zeling & Nissaxter",
         resultado: "W",
         metodo: "TKO",

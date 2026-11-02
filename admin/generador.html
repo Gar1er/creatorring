@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generador | CreatorRing</title>
+  </head>
+  <body>
+    <h1>🥊 Generador CreatorRing (herramienta antigua)</h1>
+    <!-- Solo genera texto JSON; no autentica ni registra nada en Supabase. -->
+    <p><strong>IMPORTANTE:</strong> Este generador es heredado y NO guarda en la base de datos.
+    Para registrar peleadores y combates usa <a href="login.html">el panel de administración</a>.</p>
+    <p>Registra peleadores y genera su código automáticamente.</p>
+
+    <h2>Datos del peleador</h2>
+
+    <form id="formPeleador">
+      <label for="id">ID del peleador:</label>
+      <input type="text" id="id" required />
+      <label for="nombre">Nombre del peleador:</label>
+      <input type="text" id="nombre" />
+
+      <br /><br />
+
+      <label for="alias">Apodo:</label>
+      <input type="text" id="alias" />
+
+      <br /><br />
+
+      <label for="pais">País:</label>
+      <input type="text" id="pais" required />
+
+      <br /><br />
+
+      <h2>Redes sociales</h2>
+
+      <label for="instagram">Instagram:</label>
+      <input
+        type="url"
+        id="instagram"
+        placeholder="https://instagram.com/usuario"
+      />
+
+      <br /><br />
+
+      <label for="tiktok">TikTok:</label>
+      <input type="url" id="tiktok" placeholder="https://tiktok.com/@usuario" />
+
+      <br /><br />
+
+      <label for="youtube">YouTube:</label>
+      <input
+        type="url"
+        id="youtube"
+        placeholder="https://youtube.com/@usuario"
+      />
+
+      <br /><br />
+
+      <label for="twitter">X (Twitter):</label>
+      <input type="url" id="twitter" placeholder="https://x.com/usuario" />
+
+      <br /><br />
+
+      <h2>Fotografía del peleador</h2>
+
+      <label for="foto">URL de la fotografía:</label>
+      <input
+        type="url"
+        id="foto"
+        placeholder="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
+      />
+
+      <br /><br />
+
+      <h2>Récord del peleador</h2>
+
+      <label for="victorias">Victorias:</label>
+      <input type="number" id="victorias" min="0" value="0" />
+
+      <br /><br />
+
+      <label for="derrotas">Derrotas:</label>
+      <input type="number" id="derrotas" min="0" value="0" />
+
+      <br /><br />
+
+      <label for="empates">Empates:</label>
+      <input type="number" id="empates" min="0" value="0" />
+
+      <br /><br />
+
+      <h2>🥊 Historial de combates</h2>
+
+      <div id="formCombate">
+        <label for="evento">Evento:</label>
+        <input type="text" id="evento" placeholder="La velada del año IV" />
+
+        <br /><br />
+
+        <label for="oponente">Oponente:</label>
+        <input type="text" id="oponente" placeholder="Nombre del rival" />
+
+        <br /><br />
+
+        <label for="fecha">Fecha del combate:</label>
+        <input type="date" id="fecha" />
+
+        <br /><br />
+
+        <label for="resultadoCombate">Resultado:</label>
+        <select id="resultadoCombate">
+          <option value="W">Victoria (W)</option>
+          <option value="L">Derrota (L)</option>
+          <option value="D">Empate (D)</option>
+        </select>
+
+        <br /><br />
+
+        <label for="metodo">Método:</label>
+        <input type="text" id="metodo" placeholder="Decisión, KO, TKO..." />
+
+        <br /><br />
+
+        <label for="video">Video del combate:</label>
+        <input type="url" id="video" placeholder="https://youtube.com/..." />
+
+        <br /><br />
+
+        <button type="button" id="agregarCombate">+ Agregar combate</button>
+      </div>
+
+      <br />
+
+      <button type="submit">Generar código</button>
+    </form>
+
+    <h2>Código generado</h2>
+    <pre id="resultado"></pre>
+    <button type="button" id="copiarCodigo">Copiar código</button>
+    <script>
+      const formulario = document.getElementById("formPeleador");
+      const resultado = document.getElementById("resultado");
+      const botonCopiar = document.getElementById("copiarCodigo");
+
+      botonCopiar.addEventListener("click", async function () {
+        const codigo = resultado.textContent;
+
+        if (!codigo.trim()) {
+          alert("Primero debes generar el código.");
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(codigo);
+          alert("¡Código copiado correctamente! 🥊");
+        } catch (error) {
+          alert(
+            "No se pudo copiar automáticamente. Selecciona el código y cópialo con Ctrl + C.",
+          );
+        }
+      });
+
+      const combates = [];
+
+      const botonCombate = document.getElementById("agregarCombate");
+
+      botonCombate.addEventListener("click", function () {
+        const combate = {
+          evento: document.getElementById("evento").value.trim(),
+          oponente: document.getElementById("oponente").value.trim(),
+          fecha: document
+            .getElementById("fecha")
+            .value.split("-")
+            .reverse()
+            .join("/"),
+          resultado: document.getElementById("resultadoCombate").value,
+          metodo: document.getElementById("metodo").value.trim(),
+          video: document.getElementById("video").value.trim(),
+        };
+
+        if (!combate.evento || !combate.oponente) {
+          alert("Escribe el evento y el oponente.");
+          return;
+        }
+
+        const combateDuplicado = combates.some(function (pelea) {
+          return (
+            pelea.evento.toLowerCase() === combate.evento.toLowerCase() &&
+            pelea.oponente.toLowerCase() === combate.oponente.toLowerCase() &&
+            pelea.fecha === combate.fecha
+          );
+        });
+
+        if (combateDuplicado) {
+          alert("⚠️ Este combate ya fue registrado.");
+          return;
+        }
+
+        combates.push(combate);
+
+        alert(`¡Combate agregado! Total: ${combates.length}`);
+      });
+
+      formulario.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const id = document.getElementById("id").value.trim();
+        const nombre = document.getElementById("nombre").value.trim();
+        const alias = document.getElementById("alias").value.trim();
+        const pais = document.getElementById("pais").value.trim();
+        const instagram = document.getElementById("instagram").value.trim();
+        const tiktok = document.getElementById("tiktok").value.trim();
+        const youtube = document.getElementById("youtube").value.trim();
+        const twitter = document.getElementById("twitter").value.trim();
+        const foto =
+          document.getElementById("foto").value.trim() ||
+          "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
+        const victorias = parseInt(document.getElementById("victorias").value);
+        const derrotas = parseInt(document.getElementById("derrotas").value);
+        const empates = parseInt(document.getElementById("empates").value);
+        const record = `${victorias}-${derrotas}-${empates}`;
+
+        const peleador = {
+          id: id,
+          nombreReal: nombre,
+          alias: alias,
+          pais: pais,
+          redes: {
+            instagram: instagram,
+            tiktok: tiktok,
+            youtube: youtube,
+            twitter: twitter,
+          },
+          foto: foto,
+          record: record,
+          peleas: [...combates],
+        };
+
+        resultado.textContent = JSON.stringify(peleador, null, 4) + ",";
+      });
+    </script>
+  </body>
+</html>

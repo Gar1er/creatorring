@@ -28,7 +28,7 @@
 
         <div
           id="noEventMessage"
-          style="display: none; font-weight: bold; color: #a0a0a0; padding: 5px"
+          hidden
         >
           Próximamente más información sobre el siguiente evento.
         </div>
@@ -37,7 +37,7 @@
 
     <main>
       <!-- Barra de Búsqueda -->
-      <section class="search-section">
+      <section class="search-section" id="searchSection">
         <input
           type="text"
           id="searchInput"
@@ -46,9 +46,9 @@
       </section>
 
       <!-- Sección de Eventos / Promotoras -->
-      <section class="events-section">
+      <section class="events-section" id="eventsSection">
         <h2>Grandes Eventos y Promotoras</h2>
-        <div class="events-grid">
+        <div class="events-grid" id="eventsGrid">
           <div class="event-card">
             <h3>La Velada del Año</h3>
             <p><strong>Organizador:</strong> Ibai Llanos</p>
@@ -78,7 +78,8 @@
       </section>
 
       <!-- Tabla principal de peleadores -->
-      <h2>Roster de Peleadores</h2>
+      <h2 id="rosterTitle">Roster de Peleadores</h2>
+      <div id="rosterTableWrapper" class="table-scroll">
       <table class="fighters-table">
         <thead>
           <tr>
@@ -92,9 +93,10 @@
           <!-- Los datos se cargan dinámicamente desde JavaScript -->
         </tbody>
       </table>
+      </div>
 
       <!-- Vista de Perfil Detallado (Oculta por defecto) -->
-      <section id="profileView" class="profile-view" style="display: none">
+      <section id="profileView" class="profile-view" hidden>
         <button onclick="volverAlInicio()" class="btn-back">
           ⬅ Volver al Roster
         </button>
@@ -116,6 +118,7 @@
         </div>
 
         <h3>Historial de Combates</h3>
+        <div class="table-scroll">
         <table class="fighters-table">
           <thead>
             <tr>
@@ -131,6 +134,7 @@
             <!-- Historial de peleas -->
           </tbody>
         </table>
+        </div>
       </section>
     </main>
 
@@ -138,9 +142,12 @@
       <p>CreatorRing &copy; 2026</p>
     </footer>
 
-    <!-- 1. Cargamos primero la base de datos oficial -->
+    <!-- Dependencia externa: SDK público de Supabase; nunca incluir service_role. -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="supabase-config.js"></script>
+    <!-- Primero datos históricos locales (respaldo). -->
     <script src="peleadores.js"></script>
-    <!-- 2. Cargamos después la lógica del sistema -->
+    <!-- Por último el motor del catálogo, que usa los elementos HTML anteriores. -->
     <script src="script.js"></script>
   </body>
 </html>
